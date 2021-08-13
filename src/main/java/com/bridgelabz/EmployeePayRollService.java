@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class EmployeePayRollService {
-    public enum IOService {CONSOLE_IO, FILE_TO,DB_IO, REST_IO}
+    public enum IOService {CONSOLE_IO, FILE_IO,DB_IO, REST_IO}
     private List<EmployeePayrollData> employeePayRollList;
 
     public EmployeePayRollService(){}
@@ -24,8 +24,18 @@ public class EmployeePayRollService {
     public void writeEmployeePayRollData(IOService ioService){
         if(ioService.equals(IOService.CONSOLE_IO))
             System.out.println("\n Writing Employee Payroll to Console "+employeePayRollList);
-        else if(ioService.equals(IOService.FILE_TO))
+        else if(ioService.equals(IOService.FILE_IO))
             new EmployeePayrollFileIOService().writeData(employeePayRollList);
+    }
+    public void printData(IOService ioService){
+        if(ioService.equals(IOService.FILE_IO))
+            new EmployeePayrollFileIOService().printData();
+    }
+
+    public long countEntries(IOService ioService){
+        if(ioService.equals(IOService.FILE_IO))
+            return new EmployeePayrollFileIOService().countEntries();
+        return 0;
     }
 
     public static void main(String[] args) {
