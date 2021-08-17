@@ -10,7 +10,7 @@ import java.util.List;
 public class EmployeePayrollFileIOService {
     public static String PAYROLL_FILE_NAME = "payroll-file.txt";
 
-    public void writeData(List<EmployeePayrollData> employeePayrollList) {
+    public void writeData(List<EmployeePayroll> employeePayrollList) {
         StringBuffer empBuffer = new StringBuffer();
         employeePayrollList.forEach(employee -> {
             String employeeDataString = employee.toString().concat("\n");
@@ -43,8 +43,8 @@ public class EmployeePayrollFileIOService {
         }
         return entries;
     }
-    public List<EmployeePayrollData>  readData(){
-        List<EmployeePayrollData> employeePayrollList = new ArrayList<>();
+    public List<EmployeePayroll>  readData(){
+        List<EmployeePayroll> employeePayrollList = new ArrayList<>();
         try{
             Files.lines(new File(PAYROLL_FILE_NAME).toPath())
                     .map(line -> line.trim())

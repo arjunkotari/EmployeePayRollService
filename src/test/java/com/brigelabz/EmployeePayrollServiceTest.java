@@ -1,19 +1,21 @@
 package com.brigelabz;
 
 import com.bridgelabz.EmployeePayRollService;
-import com.bridgelabz.EmployeePayrollData;
+import com.bridgelabz.EmployeePayroll;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class EmployeePayrollServiceTest {
     @Test
     public void given3EmployeeWhenWrittenToFileShouldMatchEmployeeEntries() {
-        EmployeePayrollData[] arrayOfEmps = {
-                new EmployeePayrollData(1,"Jeff Bezos", 100000.0),
-                new EmployeePayrollData(2,"Bill Gates", 200000.0),
-                new EmployeePayrollData(3,"Mark Zuckerbarg", 300000.0)
+        EmployeePayroll[] arrayOfEmps = {
+                new EmployeePayroll(1,"Jeff Bezos", 100000.0),
+                new EmployeePayroll(2,"Bill Gates", 200000.0),
+                new EmployeePayroll(3,"Mark Zuckerbarg", 300000.0)
         };
         EmployeePayRollService employeePayrollService;
         employeePayrollService = new EmployeePayRollService(Arrays.asList(arrayOfEmps));
@@ -28,5 +30,12 @@ public class EmployeePayrollServiceTest {
         EmployeePayRollService employeePayrollService = new EmployeePayRollService();
         long entries = employeePayrollService.readEmployeePayRollData(EmployeePayRollService.IOService.FILE_IO);
         Assert.assertEquals(3, entries);
+    }
+
+    @Test
+    void givenDataInDB_WhenRetrieved_ShouldMatchTheCount() {
+        EmployeePayRollService employeePayrollService = new EmployeePayRollService();
+        List<EmployeePayroll> employeePayrolls = employeePayrollService.readEmployeePayrollData();
+        Assertions.assertEquals(3, employeePayrolls.size());
     }
 }

@@ -6,10 +6,14 @@ import java.util.Scanner;
 
 public class EmployeePayRollService {
     public enum IOService {CONSOLE_IO, FILE_IO,DB_IO, REST_IO}
-    private List<EmployeePayrollData> employeePayRollList;
+    private List<EmployeePayroll> employeePayRollList;
+
+    public List<EmployeePayroll> readEmployeePayrollData() {
+        return new EmployeePayrollServiceDB().readData();
+    }
 
     public EmployeePayRollService(){}
-    public EmployeePayRollService(List<EmployeePayrollData> employeePayRollList){
+    public EmployeePayRollService(List<EmployeePayroll> employeePayRollList){
         this.employeePayRollList = employeePayRollList;
     }
     private void readEmployeePayRollData(Scanner consoleInputReader){
@@ -19,7 +23,7 @@ public class EmployeePayRollService {
         String name = consoleInputReader.next();
         System.out.println("Enter Employee Salary: ");
         double salary = consoleInputReader.nextDouble();
-        employeePayRollList.add(new EmployeePayrollData(id, name, salary));
+        employeePayRollList.add(new EmployeePayroll(id, name, salary));
     }
     public void writeEmployeePayRollData(IOService ioService){
         if(ioService.equals(IOService.CONSOLE_IO))
@@ -44,7 +48,7 @@ public class EmployeePayRollService {
     }
 
     public static void main(String[] args) {
-        ArrayList<EmployeePayrollData> employeePayRollList = new ArrayList<EmployeePayrollData>();
+        ArrayList<EmployeePayroll> employeePayRollList = new ArrayList<EmployeePayroll>();
         EmployeePayRollService employeePayRollService = new EmployeePayRollService(employeePayRollList);
         Scanner consoleInputReader = new Scanner(System.in);
         employeePayRollService.readEmployeePayRollData(consoleInputReader);
