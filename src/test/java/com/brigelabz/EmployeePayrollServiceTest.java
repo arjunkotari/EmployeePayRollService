@@ -1,32 +1,43 @@
 package com.brigelabz;
 
-import com.bridgelabz.EmployeePayRollService;
-import com.bridgelabz.EmployeePayrollData;
+import com.bridgelabz.EmployeePayrollService;
+import com.bridgelabz.EmployeePayroll;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class EmployeePayrollServiceTest {
     @Test
     public void given3EmployeeWhenWrittenToFileShouldMatchEmployeeEntries() {
-        EmployeePayrollData[] arrayOfEmps = {
-                new EmployeePayrollData(1,"Jeff Bezos", 100000.0),
-                new EmployeePayrollData(2,"Bill Gates", 200000.0),
-                new EmployeePayrollData(3,"Mark Zuckerbarg", 300000.0)
+        EmployeePayroll[] arrayOfEmps = {
+                new EmployeePayroll(1,"Jeff Bezos", 100000.0),
+                new EmployeePayroll(2,"Bill Gates", 200000.0),
+                new EmployeePayroll(3,"Mark Zuckerbarg", 300000.0)
         };
-        EmployeePayRollService employeePayrollService;
-        employeePayrollService = new EmployeePayRollService(Arrays.asList(arrayOfEmps));
-        employeePayrollService.writeEmployeePayRollData(EmployeePayRollService.IOService.FILE_IO);
-        employeePayrollService.printData(EmployeePayRollService.IOService.FILE_IO);
-        long entries = employeePayrollService.countEntries(EmployeePayRollService.IOService.FILE_IO);
+        EmployeePayrollService employeePayrollService;
+        employeePayrollService = new EmployeePayrollService(Arrays.asList(arrayOfEmps));
+        employeePayrollService.writeEmployeePayRollData(EmployeePayrollService.IOService.FILE_IO);
+        employeePayrollService.printData(EmployeePayrollService.IOService.FILE_IO);
+        long entries = employeePayrollService.countEntries(EmployeePayrollService.IOService.FILE_IO);
         Assert.assertEquals(3,entries);
     }
 
     @Test
-    public void givenFileOnReadingFromFileShouldMatchEmployeeCount() {
-        EmployeePayRollService employeePayrollService = new EmployeePayRollService();
-        long entries = employeePayrollService.readEmployeePayRollData(EmployeePayRollService.IOService.FILE_IO);
-        Assert.assertEquals(3, entries);
+    public void givenDataInDB_WhenRetrieved_ShouldMatchTheCount() {
+        EmployeePayrollService employeePayrollService = new EmployeePayrollService();
+        List<EmployeePayroll> employeePayrolls = employeePayrollService.readEmployeePayrollData();
+        Assertions.assertEquals(3, employeePayrolls.size());
+    }
+
+    @Test
+    public void givenNewSalary_WhenUpdated_ShouldSyncInDB() {
+        EmployeePayrollService employeePayrollService = new EmployeePayrollService();
+        employeePayrollService.readEmployeePayrollData();
+        employeePayrollService.updateSalaryByName("TERISA", 4000000.00);
+        boolean result = employeePayrollService.checkEmployeeDataSyncByName("TERISA");
+        Assertions.assertTrue(result);
     }
 }

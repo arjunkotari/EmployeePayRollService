@@ -2,14 +2,47 @@ package com.bridgelabz;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 
-public class EmployeePayRollService {
-    public enum IOService {CONSOLE_IO, FILE_IO,DB_IO, REST_IO}
-    private List<EmployeePayrollData> employeePayRollList;
+public class EmployeePayrollService {
 
-    public EmployeePayRollService(){}
-    public EmployeePayRollService(List<EmployeePayrollData> employeePayRollList){
+    private List<EmployeePayroll> employeePayRollList;
+
+    private EmployeePayrollServiceDB singletonEmployeePayrollServiceDB;
+
+    public void updateSalaryByName(String name, double salary) {
+        int result = singletonEmployeePayrollServiceDB.updateSalaryByName(name, salary);
+        if(result == 0)
+            return;
+
+        EmployeePayroll employeePayroll = getEmployeePayrollByName(name);
+        if(Objects.nonNull(employeePayroll))
+            employeePayroll.setSalary(salary);
+    }
+
+    public boolean checkEmployeeDataSyncByName(String name) {
+        List<EmployeePayroll> employeePayrollList = singletonEmployeePayrollServiceDB.getEmployeePayRollByName(name);
+        return employeePayrollList.get(0).equals(getEmployeePayrollByName(name));
+    }
+
+    /*
+    ------------------------------------------
+     */
+    public enum IOService {CONSOLE_IO, FILE_IO,DB_IO, REST_IO}
+
+    public List<EmployeePayroll> readEmployeePayrollData() {
+        this.employeePayRollList = singletonEmployeePayrollServiceDB.readData();
+        return this.employeePayRollList;
+    }
+    private EmployeePayroll getEmployeePayrollByName(String name) {
+        return employeePayRollList.stream().filter(item -> item.getName().equals(name)).findFirst().orElse(null);
+    }
+
+    public EmployeePayrollService(){
+        singletonEmployeePayrollServiceDB = EmployeePayrollServiceDB.getInstance();
+    }
+    public EmployeePayrollService(List<EmployeePayroll> employeePayRollList){
         this.employeePayRollList = employeePayRollList;
     }
     private void readEmployeePayRollData(Scanner consoleInputReader){
@@ -19,7 +52,7 @@ public class EmployeePayRollService {
         String name = consoleInputReader.next();
         System.out.println("Enter Employee Salary: ");
         double salary = consoleInputReader.nextDouble();
-        employeePayRollList.add(new EmployeePayrollData(id, name, salary));
+        employeePayRollList.add(new EmployeePayroll(id, name, salary));
     }
     public void writeEmployeePayRollData(IOService ioService){
         if(ioService.equals(IOService.CONSOLE_IO))
@@ -44,8 +77,8 @@ public class EmployeePayRollService {
     }
 
     public static void main(String[] args) {
-        ArrayList<EmployeePayrollData> employeePayRollList = new ArrayList<EmployeePayrollData>();
-        EmployeePayRollService employeePayRollService = new EmployeePayRollService(employeePayRollList);
+        ArrayList<EmployeePayroll> employeePayRollList = new ArrayList<EmployeePayroll>();
+        EmployeePayrollService employeePayRollService = new EmployeePayrollService(employeePayRollList);
         Scanner consoleInputReader = new Scanner(System.in);
         employeePayRollService.readEmployeePayRollData(consoleInputReader);
         employeePayRollService.writeEmployeePayRollData(IOService.CONSOLE_IO);
